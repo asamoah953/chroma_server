@@ -35,7 +35,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Database Connection
-mongoose.connect(process.env.CONECTION_STRING)
+const dbUri = process.env.CONNECTION_STRING || process.env.CONECTION_STRING; // handle both to ensure backward compatibility
+mongoose.connect(dbUri)
 .then(() => console.log('MongoDB Connected...'))
 .catch(err => console.log('DB Connection Error: ', err));
 
