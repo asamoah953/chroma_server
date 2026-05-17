@@ -76,7 +76,7 @@ app.get('/api/products', async (req, res) => {
 // 3. Add Product (Protected)
 app.post('/api/products', auth, upload.single('imageFile'), async (req, res) => {
   try {
-    const { name, price, description, benefits, science, imageUrlUrl } = req.body;
+    const { name, price, description, benefits, science, imageUrlUrl, category } = req.body;
     
     // Determine Image Path
     let finalImage = "";
@@ -94,6 +94,7 @@ app.post('/api/products', auth, upload.single('imageFile'), async (req, res) => 
     const newProduct = new Product({
       name,
       price: parseFloat(price),
+      category: category || 'Rubber Frame',
       image: finalImage,
       description,
       benefits: parsedBenefits,
@@ -114,7 +115,7 @@ app.put('/api/products/:id', auth, upload.single('imageFile'), async (req, res) 
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ msg: 'Product not found' });
 
-    const { name, price, description, benefits, science, imageUrlUrl } = req.body;
+    const { name, price, description, benefits, science, imageUrlUrl, category } = req.body;
 
     // Determine new image (if any)
     let finalImage = product.image; // keep existing by default
@@ -134,6 +135,7 @@ app.put('/api/products/:id', auth, upload.single('imageFile'), async (req, res) 
       {
         name: name || product.name,
         price: price !== undefined ? parseFloat(price) : product.price,
+        category: category || product.category,
         image: finalImage,
         description: description || product.description,
         benefits: parsedBenefits,
